@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
+require "simplecov"
+SimpleCov.start do
+  enable_coverage :branch
+  add_filter "/spec/"
+end
+
+require "rails" # Require Rails first so that the Railtie loads
 require "action_schema"
+require "ostruct"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

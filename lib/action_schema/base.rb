@@ -1,7 +1,19 @@
 module ActionSchema
+  class FieldError < ActionSchema::Error
+    def initialize(field, record)
+      @field = field
+      @record = record
+      super("Field '#{field}' does not exist on record: #{record.inspect}")
+    end
+  end
+
   class Base
     class << self
       attr_accessor :schema, :before_render_hooks, :after_render_hooks
+
+      def call(*args, **kwargs, &block)
+        new(*args, **kwargs, &block).render
+      end
 
       def before_render(&block)
         self.before_render_hooks ||= []
@@ -70,13 +82,14 @@ module ActionSchema
     end
 
     def render
-      record_or_collection = apply_hooks(:before_render, @record_or_collection)
+      renderable = @record_or_collection
+      renderable = apply_hooks(:before_render, @record_or_collection)
 
       output =
-        if record_or_collection.respond_to?(:map)
-          record_or_collection.map { |record| render_record(record) }
+        if renderable.respond_to?(:map)
+          renderable.map { |record| render_record(record) }
         else
-          render_record(record_or_collection)
+          render_record(renderable)
         end
 
       apply_hooks(:after_render, output)
@@ -98,11 +111,20 @@ module ActionSchema
           if config[:computed]
             instance_exec(record, context, &config[:value])
           elsif association = config[:association]
-            resolved_schema = association.is_a?(Proc) ? association.call(controller) : association
-            child_context = context.merge(parent: record)
-            resolved_schema.new(record.public_send(key), context: child_context, controller: controller).render
+            associated_record_or_collection = record.public_send(key)
+            if associated_record_or_collection.nil?
+              nil
+            else
+              resolved_schema = association.is_a?(Proc) ? association.call(controller) : association
+              child_context = context.merge(parent: record)
+              resolved_schema.new(record.public_send(key), context: child_context, controller: controller).render
+            end
           else
-            record.public_send(config[:value])
+            if record.respond_to?(config[:value])
+              record.public_send(config[:value])
+            else
+              raise FieldError.new(config[:value], record)
+            end
           end
       end
     end
