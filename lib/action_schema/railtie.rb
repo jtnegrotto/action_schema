@@ -1,6 +1,6 @@
 module ActionSchema
   class Railtie < ::Rails::Railtie
-    initializer 'action_schema.controller' do
+    initializer "action_schema.controller" do
       Rails.logger.debug("ActionSchema Railtie loaded")
 
       ActiveSupport.on_load(:action_controller_base) do

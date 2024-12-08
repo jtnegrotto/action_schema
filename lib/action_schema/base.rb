@@ -26,7 +26,7 @@ module ActionSchema
       def association(name, schema_definition = nil, &block)
         base_schema_class = ActionSchema.configuration.base_class
 
-        resolved_schema = 
+        resolved_schema =
           if schema_definition.is_a?(Symbol)
             ->(controller) { controller.resolve_schema(schema_definition) }
           elsif schema_definition.is_a?(Class)
@@ -122,7 +122,7 @@ module ActionSchema
       data
     end
 
-    def transform data
+    def transform(data)
       @transformed = data
     end
   end

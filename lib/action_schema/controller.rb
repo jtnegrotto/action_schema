@@ -24,7 +24,7 @@ module ActionSchema
     def schema_for(record_or_collection, schema_name = :default, context: {}, &block)
       combined_schema_context = schema_context.merge(resolve_schema_context(context))
 
-      schema_definition = 
+      schema_definition =
         if block_given?
           Class.new(ActionSchema.configuration.base_class, &block)
         elsif schema_name.is_a?(Class)

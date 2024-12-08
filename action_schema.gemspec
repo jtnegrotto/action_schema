@@ -5,8 +5,8 @@ require_relative "lib/action_schema/version"
 Gem::Specification.new do |spec|
   spec.name = "action_schema"
   spec.version = ActionSchema::VERSION
-  spec.authors = ["Julien Negrotto"]
-  spec.email = ["jtnegrotto@gmail.com"]
+  spec.authors = [ "Julien Negrotto" ]
+  spec.email = [ "jtnegrotto@gmail.com" ]
 
   spec.summary = "A lightweight schema library for Rails controllers."
   spec.description = "ActionSchema provides a flexible, Rails-friendly approach to rendering and parsing structured data in your controllers."
@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
         f.start_with?(*%w[bin/ test/ spec/ features/ .git .github appveyor Gemfile])
     end
   end
-  spec.require_paths = ["lib"]
+  spec.require_paths = [ "lib" ]
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
