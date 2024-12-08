@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     action_schema (0.1.0)
+      activesupport
       rails
 
 GEM
