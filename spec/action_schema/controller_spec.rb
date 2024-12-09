@@ -16,7 +16,9 @@ RSpec.describe ActionSchema::Controller do
         end
       end
       controller_schema = controller_class.action_schemas[:default].schema
-      expect(controller_schema).to eq(name: { value: :name })
+      expect(controller_schema).to match(
+        a_hash_including(:name => a_hash_including(value: :name))
+      )
     end
 
     it "inherits schemas from the superclass" do
@@ -27,7 +29,9 @@ RSpec.describe ActionSchema::Controller do
       end
       child_class = Class.new(parent_class)
       child_schema = child_class.action_schemas[:default].schema
-      expect(child_schema).to eq(name: { value: :name })
+      expect(child_schema).to match(
+        a_hash_including(:name => a_hash_including(value: :name))
+      )
     end
 
     it "sets the schema name to :default if none is provided" do
@@ -37,7 +41,9 @@ RSpec.describe ActionSchema::Controller do
         end
       end
       controller_schema = controller_class.action_schemas[:default].schema
-      expect(controller_schema).to eq(name: { value: :name })
+      expect(controller_schema).to match(
+        a_hash_including(:name => a_hash_including(value: :name))
+      )
     end
 
     it "allows multiple schemas to be defined" do

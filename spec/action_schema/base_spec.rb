@@ -53,6 +53,15 @@ RSpec.describe ActionSchema::Base do
         expect(rendered).to eq(name: "John McClane")
       end
 
+      it "supports renaming fields" do
+        schema = define_schema {
+          field :name, as: :full_name
+        }
+        record = create_record(name: "John McClane")
+        rendered = schema.call(record)
+        expect(rendered).to eq(full_name: "John McClane")
+      end
+
       context "with if condition" do
         it "includes fields if the condition evaluates to true" do
           schema = define_schema {
@@ -191,6 +200,29 @@ RSpec.describe ActionSchema::Base do
           id: 1,
           name: "John McClane",
           posts: [
+            { id: 1, title: "Post 1" },
+            { id: 2, title: "Post 2" }
+          ],
+        )
+      end
+
+      it "supports renaming associations" do
+        schema = define_schema do
+          fields :id, :name
+          association :posts, as: :articles do
+            fields :id, :title
+          end
+        end
+        posts = [
+          create_record(id: 1, title: "Post 1"),
+          create_record(id: 2, title: "Post 2")
+        ]
+        record = create_record(id: 1, name: "John McClane", posts: posts)
+        rendered = schema.call(record)
+        expect(rendered).to eq(
+          id: 1,
+          name: "John McClane",
+          articles: [
             { id: 1, title: "Post 1" },
             { id: 2, title: "Post 2" }
           ],

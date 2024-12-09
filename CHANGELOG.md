@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **Renaming:** Support the `as:` option for renaming fields and associations
+
 ## [0.1.1] - 2024-12-09
 
 - **More Closures:** Support procs and lambdas anywhere a block is accepted in the DSL

@@ -37,27 +37,35 @@ module ActionSchema
         subclass.schema = schema.dup
       end
 
-      def field(name, value = nil, **options, &block)
-        schema[name] = { value: block || value || name, **options }
+      def field(name, value = nil, as: nil, **options, &block)
+        schema[name] = {
+          value: block || value || name,
+          as: as,
+          **options
+        }
       end
 
-      def association(name, schema_definition = nil, &block)
+      def association(name, association_schema = nil, as: nil, **options, &block)
         base_schema_class = ActionSchema.configuration.base_class
 
         resolved_schema =
-          if schema_definition.is_a?(Symbol)
-            ->(controller) { controller.resolve_schema(schema_definition) }
-          elsif schema_definition.is_a?(Class)
-            schema_definition
-          elsif schema_definition.is_a?(Proc)
-            Class.new(base_schema_class, &Dalambda[schema_definition])
+          if association_schema.is_a?(Symbol)
+            ->(controller) { controller.resolve_schema(association_schema) }
+          elsif association_schema.is_a?(Class)
+            association_schema
+          elsif association_schema.is_a?(Proc)
+            Class.new(base_schema_class, &Dalambda[association_schema])
           elsif block_given?
             Class.new(base_schema_class, &block)
           else
             raise ArgumentError, "An association schema or block must be provided"
           end
 
-        schema[name] = { association: resolved_schema }
+        schema[name] = {
+          association: resolved_schema,
+          as: as,
+          **options
+        }
       end
 
       def computed(name, lambda_or_proc = nil, &block)
@@ -113,7 +121,7 @@ module ActionSchema
         next if if_condition && !instance_exec(record, &if_condition)
         next if unless_condition && instance_exec(record, &unless_condition)
 
-        transformed_key = transform_key(key)
+        transformed_key = config[:as] || transform_key(key)
 
         result[transformed_key] =
           if config[:computed]
