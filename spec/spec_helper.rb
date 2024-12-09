@@ -8,6 +8,8 @@ end
 
 require "rails" # Require Rails first so that the Railtie loads
 require "action_schema"
+require "dummy_app/config/application"
+require "rspec/rails"
 require "ostruct"
 
 RSpec.configure do |config|

@@ -38,16 +38,9 @@ module ActionSchema
       schema_definition.new(record_or_collection, context: combined_schema_context, controller: self).render
     end
 
-    def resolve_schema(schema_name_or_class)
-      case schema_name_or_class
-      when Symbol
-        self.class.action_schemas[schema_name_or_class] ||
-          raise(ArgumentError, "Schema `#{schema_name_or_class}` not defined")
-      when Class
-        schema_name_or_class
-      else
-        raise ArgumentError, "Invalid schema: must be a Symbol or Class"
-      end
+    def resolve_schema(schema_name)
+      self.class.action_schemas[schema_name] ||
+        raise(ArgumentError, "Schema `#{schema_name}` not defined")
     end
 
     private
