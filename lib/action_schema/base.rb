@@ -15,19 +15,25 @@ module ActionSchema
         new(*args, **kwargs, &block).render
       end
 
-      def before_render(&block)
-        self.before_render_hooks ||= []
-        before_render_hooks << block
+      def before_render_hooks
+        @before_render_hooks ||= []
       end
 
-      def after_render(&block)
-        self.after_render_hooks ||= []
-        after_render_hooks << block
+      def after_render_hooks
+        @after_render_hooks ||= []
+      end
+
+      def before_render(lambda_or_proc = nil, &block)
+        self.before_render_hooks << (lambda_or_proc || block)
+      end
+
+      def after_render(lambda_or_proc = nil, &block)
+        self.after_render_hooks << (lambda_or_proc || block)
       end
 
       def inherited(subclass)
-        subclass.before_render_hooks = (before_render_hooks || []).dup
-        subclass.after_render_hooks = (after_render_hooks || []).dup
+        subclass.before_render_hooks = before_render_hooks.dup
+        subclass.after_render_hooks = after_render_hooks.dup
         subclass.schema = schema.dup
       end
 
@@ -43,6 +49,8 @@ module ActionSchema
             ->(controller) { controller.resolve_schema(schema_definition) }
           elsif schema_definition.is_a?(Class)
             schema_definition
+          elsif schema_definition.is_a?(Proc)
+            Class.new(base_schema_class, &Dalambda[schema_definition])
           elsif block_given?
             Class.new(base_schema_class, &block)
           else
@@ -52,8 +60,8 @@ module ActionSchema
         schema[name] = { association: resolved_schema }
       end
 
-      def computed(name, &block)
-        schema[name] = { computed: true, value: block }
+      def computed(name, lambda_or_proc = nil, &block)
+        schema[name] = { computed: true, value: (lambda_or_proc || block) }
       end
 
       def fields(*names)
@@ -109,7 +117,7 @@ module ActionSchema
 
         result[transformed_key] =
           if config[:computed]
-            instance_exec(record, context, &config[:value])
+            instance_exec(record, context, &Dalambda[config[:value]])
           elsif association = config[:association]
             associated_record_or_collection = record.public_send(key)
             if associated_record_or_collection.nil?
@@ -138,7 +146,7 @@ module ActionSchema
       hooks = self.class.public_send("#{type}_hooks") || []
       hooks.each do |hook|
         @transformed = nil
-        instance_exec(data, &hook)
+        instance_exec(data, &Dalambda[hook])
         data = @transformed || data
       end
       data

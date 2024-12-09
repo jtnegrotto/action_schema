@@ -16,7 +16,6 @@ module ActionSchema
       da_actual_lambda = @lambda
       arity = @lambda.arity
       proc do |*args, &block|
-        puts *args, &block
         if da_actual_lambda.parameters.any? { |type, _| type == :block }
           instance_exec(*args.take(arity), block, &da_actual_lambda)
         else

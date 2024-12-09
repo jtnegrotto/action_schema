@@ -44,6 +44,15 @@ RSpec.describe ActionSchema::Base do
         expect(rendered).to eq(name: "John McClane")
       end
 
+      it "supports computed fields with lambdas" do
+        schema = define_schema {
+          computed :name, ->(record) { [ record.first_name, record.last_name ].join(" ") }
+        }
+        record = create_record(first_name: "John", last_name: "McClane")
+        rendered = schema.call(record)
+        expect(rendered).to eq(name: "John McClane")
+      end
+
       context "with if condition" do
         it "includes fields if the condition evaluates to true" do
           schema = define_schema {
@@ -165,6 +174,29 @@ RSpec.describe ActionSchema::Base do
         )
       end
 
+      it "renders inline association schemas defined with lambdas" do
+        schema = define_schema {
+          fields :id, :name
+          association :posts, -> {
+            fields :id, :title
+          }
+        }
+        posts = [
+          create_record(id: 1, title: "Post 1"),
+          create_record(id: 2, title: "Post 2")
+        ]
+        record = create_record(id: 1, name: "John McClane", posts: posts)
+        rendered = schema.call(record)
+        expect(rendered).to eq(
+          id: 1,
+          name: "John McClane",
+          posts: [
+            { id: 1, title: "Post 1" },
+            { id: 2, title: "Post 2" }
+          ],
+        )
+      end
+
       it "raises an error if no schema is provided" do
         expect {
           schema = define_schema {
@@ -223,6 +255,16 @@ RSpec.describe ActionSchema::Base do
           expect(record.name).to eq("Hans Gruber")
         end
 
+        it "accepts the hook as a lambda" do
+          schema = define_schema {
+            fields :id, :name
+            before_render ->(record) { record.name = "John McClane" }
+          }
+          record = create_record(id: 1)
+          rendered = schema.call(record)
+          expect(rendered).to eq(id: 1, name: "John McClane")
+        end
+
         context "with transformation" do
           it "replaces the record with the transformed value" do
             schema = define_schema {
@@ -257,6 +299,16 @@ RSpec.describe ActionSchema::Base do
           record = create_record(id: 1)
           rendered = schema.call(record)
           expect(rendered).to_not have_key(:name)
+        end
+
+        it "accepts the hook as a lambda" do
+          schema = define_schema {
+            fields :id
+            after_render ->(output) { output[:name] = "John McClane" }
+          }
+          record = create_record(id: 1)
+          rendered = schema.call(record)
+          expect(rendered).to eq(id: 1, name: "John McClane")
         end
 
         context "with transformation" do
