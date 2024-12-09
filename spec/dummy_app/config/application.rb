@@ -7,6 +7,7 @@ module DummyApp
     config.eager_load = false
     config.logger = Logger.new(nil)
     config.log_level = :fatal
+    config.active_support.deprecation = :silence
   end
 end
 

@@ -49,7 +49,7 @@ RSpec.describe ActionSchema::Controller do
           field :age
         end
       end
-      expect(controller_class.action_schemas.keys).to eq([:default, :other])
+      expect(controller_class.action_schemas.keys).to eq([ :default, :other ])
     end
   end
 

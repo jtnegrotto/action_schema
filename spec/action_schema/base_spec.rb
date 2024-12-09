@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe ActionSchema::Base do
-  def define_schema(base_class=described_class, &block)
+  def define_schema(base_class = described_class, &block)
     Class.new(base_class, &block)
   end
 
@@ -37,7 +37,7 @@ RSpec.describe ActionSchema::Base do
 
       it "supports computed fields with blocks" do
         schema = define_schema {
-          computed(:name) { |record| [record.first_name, record.last_name].join(" ") }
+          computed(:name) { |record| [ record.first_name, record.last_name ].join(" ") }
         }
         record = create_record(first_name: "John", last_name: "McClane")
         rendered = schema.call(record)
@@ -128,7 +128,7 @@ RSpec.describe ActionSchema::Base do
         }
         posts = [
           create_record(id: 1, title: "Post 1"),
-          create_record(id: 2, title: "Post 2"),
+          create_record(id: 2, title: "Post 2")
         ]
         record = create_record(id: 1, name: "John McClane", posts: posts)
         rendered = schema.call(record)
@@ -137,7 +137,7 @@ RSpec.describe ActionSchema::Base do
           name: "John McClane",
           posts: [
             { id: 1, title: "Post 1" },
-            { id: 2, title: "Post 2" },
+            { id: 2, title: "Post 2" }
           ],
         )
       end
@@ -151,7 +151,7 @@ RSpec.describe ActionSchema::Base do
         }
         posts = [
           create_record(id: 1, title: "Post 1"),
-          create_record(id: 2, title: "Post 2"),
+          create_record(id: 2, title: "Post 2")
         ]
         record = create_record(id: 1, name: "John McClane", posts: posts)
         rendered = schema.call(record)
@@ -160,7 +160,7 @@ RSpec.describe ActionSchema::Base do
           name: "John McClane",
           posts: [
             { id: 1, title: "Post 1" },
-            { id: 2, title: "Post 2" },
+            { id: 2, title: "Post 2" }
           ],
         )
       end
@@ -287,12 +287,12 @@ RSpec.describe ActionSchema::Base do
           association :posts, :post
         }
         post = create_record(id: 1, title: "Post 1")
-        record = create_record(id: 1, name: "John McClane", posts: [post])
+        record = create_record(id: 1, name: "John McClane", posts: [ post ])
         rendered = schema.call(record, controller: controller_class.new)
         expect(rendered).to eq(
           id: 1,
           name: "John McClane",
-          posts: [{ id: 1, title: "Post 1" }],
+          posts: [ { id: 1, title: "Post 1" } ],
         )
       end
     end
