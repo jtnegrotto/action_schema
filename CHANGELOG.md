@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **Refinements:** Support the `refine:` option for refining fields
 - **Renaming:** Support the `as:` option for renaming fields and associations
 
 ## [0.1.1] - 2024-12-09

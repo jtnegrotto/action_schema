@@ -37,10 +37,11 @@ module ActionSchema
         subclass.schema = schema.dup
       end
 
-      def field(name, value = nil, as: nil, **options, &block)
+      def field(name, value = nil, as: nil, refine: nil, **options, &block)
         schema[name] = {
           value: block || value || name,
           as: as,
+          refine: refine,
           **options
         }
       end
@@ -123,7 +124,7 @@ module ActionSchema
 
         transformed_key = config[:as] || transform_key(key)
 
-        result[transformed_key] =
+        rendered_value =
           if config[:computed]
             instance_exec(record, context, &Dalambda[config[:value]])
           elsif association = config[:association]
@@ -142,6 +143,12 @@ module ActionSchema
               raise FieldError.new(config[:value], record)
             end
           end
+
+        if (refinement = config[:refine])
+          rendered_value = instance_exec(rendered_value, &Dalambda[refinement])
+        end
+
+        result[transformed_key] = rendered_value
       end
     end
 

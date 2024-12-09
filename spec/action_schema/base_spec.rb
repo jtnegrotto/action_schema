@@ -62,6 +62,15 @@ RSpec.describe ActionSchema::Base do
         expect(rendered).to eq(full_name: "John McClane")
       end
 
+      it "allows refining fields" do
+        schema = define_schema {
+          field :name, refine: ->(value) { value.upcase }
+        }
+        record = create_record(name: "John McClane")
+        rendered = schema.call(record)
+        expect(rendered).to eq(name: "JOHN MCCLANE")
+      end
+
       context "with if condition" do
         it "includes fields if the condition evaluates to true" do
           schema = define_schema {
