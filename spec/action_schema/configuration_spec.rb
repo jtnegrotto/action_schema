@@ -29,9 +29,14 @@ RSpec.describe ActionSchema::Configuration do
       end
 
       it 'returns a custom key transformer if set' do
-        transformer = ->(key) { key.to_s.upcase }
-        ActionSchema.configuration.transform_keys = transformer
-        expect(ActionSchema.configuration.transform_keys).to eq(transformer)
+        original_transformer = ActionSchema.configuration.transform_keys
+        begin
+          transformer = ->(key) { key.to_s.upcase }
+          ActionSchema.configuration.transform_keys = transformer
+          expect(ActionSchema.configuration.transform_keys).to eq(transformer)
+        ensure
+          ActionSchema.configuration.transform_keys = original_transformer
+        end
       end
     end
 

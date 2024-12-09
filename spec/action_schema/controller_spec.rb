@@ -99,6 +99,46 @@ RSpec.describe ActionSchema::Controller do
   end
 
   describe "#schema_for" do
-    pending "write the specs"
+    it "renders a record using an inline schema" do
+      controller_class = define_controller
+      controller = controller_class.new
+      record = double(name: "Alice")
+      schema = controller.schema_for(record) do
+        field :name
+      end
+      expect(schema).to eq(name: "Alice")
+    end
+
+    it "renders a record using a named schema" do
+      controller_class = define_controller do
+        schema :default do
+          field :name
+        end
+      end
+      controller = controller_class.new
+      record = double(name: "Alice")
+      schema = controller.schema_for(record)
+      expect(schema).to eq(name: "Alice")
+    end
+
+    it "renders a record using a schema class" do
+      schema_class = Class.new(ActionSchema::Base) do
+        field :name
+      end
+      controller_class = define_controller
+      controller = controller_class.new
+      record = double(name: "Alice")
+      schema = controller.schema_for(record, schema_class)
+      expect(schema).to eq(name: "Alice")
+    end
+
+    it "raises an error if the schema is not defined" do
+      controller_class = define_controller
+      controller = controller_class.new
+      record = double(name: "Alice")
+      expect {
+        controller.schema_for(record)
+      }.to raise_error(ArgumentError, "Schema `default` not defined")
+    end
   end
 end

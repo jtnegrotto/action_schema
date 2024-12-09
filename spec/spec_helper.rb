@@ -6,6 +6,7 @@ SimpleCov.start do
   add_filter "/spec/"
 end
 
+ENV["RAILS_ENV"] = "test"
 require "rails" # Require Rails first so that the Railtie loads
 require "action_schema"
 require "dummy_app/config/application"

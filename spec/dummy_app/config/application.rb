@@ -8,6 +8,7 @@ module DummyApp
     config.logger = Logger.new(nil)
     config.log_level = :fatal
     config.active_support.deprecation = :silence
+    config.action_controller.allow_forgery_protection = false
   end
 end
 
