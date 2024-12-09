@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/action_schema.svg)](https://badge.fury.io/rb/action_schema)
+
 # ActionSchema
 
 ActionSchema provides a flexible, Rails-friendly approach to rendering ~and
