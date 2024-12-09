@@ -17,7 +17,7 @@ RSpec.describe ActionSchema::Controller do
       end
       controller_schema = controller_class.action_schemas[:default].schema
       expect(controller_schema).to match(
-        a_hash_including(:name => a_hash_including(value: :name))
+        a_hash_including(name: a_hash_including(value: :name))
       )
     end
 
@@ -30,7 +30,7 @@ RSpec.describe ActionSchema::Controller do
       child_class = Class.new(parent_class)
       child_schema = child_class.action_schemas[:default].schema
       expect(child_schema).to match(
-        a_hash_including(:name => a_hash_including(value: :name))
+        a_hash_including(name: a_hash_including(value: :name))
       )
     end
 
@@ -42,7 +42,7 @@ RSpec.describe ActionSchema::Controller do
       end
       controller_schema = controller_class.action_schemas[:default].schema
       expect(controller_schema).to match(
-        a_hash_including(:name => a_hash_including(value: :name))
+        a_hash_including(name: a_hash_including(value: :name))
       )
     end
 
