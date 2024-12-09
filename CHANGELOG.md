@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2024-12-09
+
+- **More Closures:** Support procs and lambdas anywhere a block is accepted in the DSL
+
 ## [0.1.0] - 2024-12-08
 
 ### Added
@@ -49,5 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 100% test coverage
 - Comprehensive documentation
 
-[Unreleased]: https://github.com/jtnegrotto/action_schema/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/jtnegrotto/action_schema/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/jtnegrotto/action_schema/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/jtnegrotto/action_schema/releases/tag/v0.1.0

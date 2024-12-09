@@ -10,7 +10,7 @@ parsing~ (coming soon) structured data in your controllers.
 **ActionSchema** is currently in early development. Its API is subject to
 significant changes. If you do choose to use it, please:
 
-* Lock the version in your Gemfile (e.g. `gem "action_schema", "= 0.1.0"`) 
+* Lock the version in your Gemfile (e.g. `gem "action_schema", "= 0.1.1"`) 
 * Be prepared to update your code as the library evolves
 * Refer to the [CHANGELOG](CHANGELOG.md) for updates
 * [Report](https://github.com/jtnegrotto/action_schema/issues/new) any issues you encounter to help improve the library
@@ -20,7 +20,7 @@ significant changes. If you do choose to use it, please:
 Add the gem to your Gemfile:
 
 ```bash
-bundle add action_schema -v '= 0.1.0'
+bundle add action_schema -v '= 0.1.1'
 ```
 
 ## Usage
@@ -35,10 +35,10 @@ The simplest way to define a schema is inline in your controller action:
 class UsersController < ApplicationController
   def index
     users = User.all
-    render json: schema_for(users) do
+    render json: schema_for(users, -> {
       fields :id, :email
-      computed(:full_name) { |user| "#{user.first_name} #{user.last_name}" }
-    end
+      computed :full_name, ->(user) { "#{user.first_name} #{user.last_name}" }
+    })
   end
 end
 ```
@@ -205,8 +205,8 @@ less specific ones.
 #### Hooks
 
 You can define hooks to run before or after rendering. The `before_render` hook
-takes a block that receives the record or collection to be rendered. The
-`after_render` hook takes a block that receives the rendered data. Both hooks
+takes a closure that receives the record or collection to be rendered. The
+`after_render` hook takes a closure that receives the rendered data. Both hooks
 allow you to replace the data with a new value using the `transform` method:
 
 ```ruby
