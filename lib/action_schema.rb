@@ -8,6 +8,7 @@ module ActionSchema
 end
 
 require_relative "action_schema/version"
+require_relative "action_schema/dalambda"
 require_relative "action_schema/configuration"
 require_relative "action_schema/base"
 require_relative "action_schema/controller"

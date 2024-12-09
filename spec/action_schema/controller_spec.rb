@@ -109,6 +109,16 @@ RSpec.describe ActionSchema::Controller do
       expect(schema).to eq(name: "Alice")
     end
 
+    it "renders a record using an inline schema provided as a lambda" do
+      controller_class = define_controller
+      controller = controller_class.new
+      record = double(name: "Alice")
+      schema = controller.schema_for(record, -> {
+        field :name
+      })
+      expect(schema).to eq(name: "Alice")
+    end
+
     it "renders a record using a named schema" do
       controller_class = define_controller do
         schema :default do
