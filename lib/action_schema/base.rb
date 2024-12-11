@@ -207,7 +207,8 @@ module ActionSchema
       when Class
         value
       when Proc
-        Class.new(ActionSchema::Base, &Dalambda[value]).tap do |schema_class|
+        base_class = ActionSchema.configuration.base_class
+        Class.new(base_class, &Dalambda[value]).tap do |schema_class|
           schema_class.tagged_schemas = tagged_schemas.dup
         end
       else
