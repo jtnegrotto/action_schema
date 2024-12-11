@@ -125,7 +125,7 @@ module ActionSchema
     end
 
     def merge!(hash)
-      merged_attributes.merge!(hash)
+      tap { merged_attributes.merge!(hash) }
     end
 
     private
