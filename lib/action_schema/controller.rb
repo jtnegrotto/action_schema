@@ -36,15 +36,16 @@ module ActionSchema
     end
 
     def schema_for(name_or_with, with: nil, context: {})
-      name = case name_or_with
-      when Symbol, String
-               name_or_with.to_sym
-      when nil
-               :default
-      else
-               with = name_or_with
-               :default
-      end
+      name =
+        case name_or_with
+        when Symbol, String
+          name_or_with.to_sym
+        when nil
+          :default
+        else
+          with = name_or_with
+          :default
+        end
 
       schema_class = tagged_schemas[name.to_sym]
       raise ArgumentError, "Schema `#{name}` is not defined for #{self.class.name}" if schema_class.nil?
@@ -54,6 +55,10 @@ module ActionSchema
     def schema(with = nil, context: {}, &block)
       schema_class = self.class.send(:create_schema_class, context: context, closure: block)
       create_schema(schema_class, with: with, context: context)
+    end
+
+    def action_schema(with = nil, context: {}, &block)
+      schema_for(action_name, with: with, context: context, &block)
     end
 
     private

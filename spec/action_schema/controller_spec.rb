@@ -4,7 +4,7 @@ RSpec.describe ActionSchema::Controller do
   helper :define_controller do |parent: Object, &block|
     Class.new(parent) do
       include ActionSchema::Controller
-      instance_exec(&block) if block
+      class_eval(&block) if block
     end
   end
 
@@ -158,6 +158,30 @@ RSpec.describe ActionSchema::Controller do
       expect(schema.class.schema).to eq({
         name: { type: :field, value: :name }
       })
+    end
+  end
+
+  describe "#action_schema" do
+    it "instantiates a schema for the action" do
+      controller_class = define_controller do
+        schema :show do
+          field :name
+        end
+
+        def show
+          action_schema
+        end
+
+        private
+
+        # This is a Rails method that we need to stub out
+        def action_name
+          "show"
+        end
+      end
+      controller = controller_class.new
+      schema = controller.show
+      expect(schema).to be_a(ActionSchema::Base)
     end
   end
 end

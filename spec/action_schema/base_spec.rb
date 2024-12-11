@@ -485,6 +485,14 @@ RSpec.describe ActionSchema::Base do
       end
     end
 
+    it "merges extra attributes" do
+      schema = create_schema { fields :id, :name }
+      record = create_record(id: 1, name: "John McClane")
+      renderer = schema.new(record)
+      renderer.merge!(extra: "value")
+      expect(renderer.render).to eq(id: 1, name: "John McClane", extra: "value")
+    end
+
     it "applies configured key transformations" do
       original_transform_keys = ActionSchema.configuration.transform_keys
 

@@ -124,15 +124,27 @@ module ActionSchema
       as_json.to_json
     end
 
+    def merge!(hash)
+      merged_attributes.merge!(hash)
+    end
+
     private
 
+    def merged_attributes
+      @merged_attributes ||= {}
+    end
+
     def render_record(record)
-      self.class.schema.each_with_object({}) do |(key, config), result|
+      attributes = self.class.schema.each_with_object({}) do |(key, config), result|
         catch :skip_field do
           final_key, final_value = render_field(record, key, config)
           result[final_key] = final_value
         end
       end
+
+      attributes.merge(merged_attributes.map do |key, value|
+        [ transform_key(key), value ]
+      end.to_h)
     end
 
     def render_field(record, key, config)
