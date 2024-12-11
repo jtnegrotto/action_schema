@@ -39,6 +39,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop-rails-omakase", "~> 1.0"
   spec.add_development_dependency "simplecov", "~> 0.22"
   spec.add_development_dependency "rspec-rails"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "pry-nav"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

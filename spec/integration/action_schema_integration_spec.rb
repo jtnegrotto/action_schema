@@ -2,14 +2,16 @@ require "spec_helper"
 
 RSpec.describe "Action Schema Integration", type: :request do
   before do
+    ActionSchema.configuration.transform_keys = ->(key) { key.to_s.camelize(:lower) }
+
     Rails.application.routes.draw do
       resources :users, only: [ :index ]
     end
 
     class UsersController < ActionController::Base
       schema do
-        field :id
-        computed(:name) { |user| [ user.first_name, user.last_name ].join(" ") }
+        field :id, as: :user_id
+        computed(:full_name) { |user| [ user.first_name, user.last_name ].join(" ") }
 
         after_render do |data|
           transform({
@@ -30,13 +32,15 @@ RSpec.describe "Action Schema Integration", type: :request do
 
   after do
     Rails.application.routes_reloader.reload!
+
+    ActionSchema.configuration.transform_keys = nil
   end
 
   it "renders the schema" do
     get "/users"
     expect(response).to have_http_status(:ok)
     expect(JSON(response.body)).to eq({
-      "users" => [ { "id" => 1, "name" => "John McClane" } ],
+      "users" => [ { "userId" => 1, "fullName" => "John McClane" } ],
       "meta" => { "total" => 1 }
     })
   end

@@ -11,7 +11,12 @@ require "rails" # Require Rails first so that the Railtie loads
 require "action_schema"
 require "dummy_app/config/application"
 require "rspec/rails"
+require "pry"
+require "pry-nav"
 require "ostruct"
+require "pp"
+
+require "support/helpers"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -23,4 +28,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.render_views
 end
